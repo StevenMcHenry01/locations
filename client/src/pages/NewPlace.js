@@ -1,33 +1,109 @@
 // 3rd party imports
-import React from 'react'
-import styled from 'styled-components'
+import React, { useContext } from 'react'
+import { ThemeContext } from 'styled-components'
 
 // My imports
-import Input from '../components/Shared/FormElements/Input'
+import Input from '../components/Shared/FormElements/Input/Input'
+import Button from '../components/Shared/FormElements/Button/Button'
+import {
+  LightFormStyled as NewLightPlaceFormStyled,
+  DarkFormStyled as NewDarkPlaceFormStyled
+} from '../components/Shared/FormElements/PlaceFormStyle'
+import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH } from '../utils/formValidation'
+import { useForm } from '../hooks/form-hook'
 
 const NewPlace = () => {
+  const { mode: theme } = useContext(ThemeContext)
+
+  const [formState, inputHandler] = useForm(
+    {
+      title: {
+        value: '',
+        isValid: false
+      },
+      description: {
+        value: '',
+        isValid: false
+      },
+      address: {
+        value: '',
+        isValid: false
+      }
+    },
+    false
+  )
+
+  const placeSubmitHandler = event => {
+    event.preventDefault()
+    console.log(formState.inputs) //TODO send to backend
+  }
+
+  if (theme === 'light') {
+    return (
+      <NewLightPlaceFormStyled onSubmit={placeSubmitHandler}>
+        <Input
+          id='title'
+          elementProp='input'
+          type='text'
+          label='Title'
+          validators={[VALIDATOR_REQUIRE()]}
+          errorText='Title is required'
+          onInput={inputHandler}
+        />
+        <Input
+          id='description'
+          elementProp='textarea'
+          label='Description'
+          validators={[VALIDATOR_MINLENGTH(5)]}
+          errorText='Please enter a valid description (atleast 5 characters)'
+          onInput={inputHandler}
+        />
+        <Input
+          id='address'
+          elementProp='input'
+          label='Address'
+          validators={[VALIDATOR_REQUIRE()]}
+          errorText='Address is required'
+          onInput={inputHandler}
+        />
+        <Button type='submit' disabled={!formState.isValid}>
+          Add Place
+        </Button>
+      </NewLightPlaceFormStyled>
+    )
+  }
   return (
-    <NewPlaceFormStyled>
+    <NewDarkPlaceFormStyled onSubmit={placeSubmitHandler}>
       <Input
+        id='title'
         elementProp='input'
         type='text'
         label='Title'
-        errorText='Please enter a valid title'
+        validators={[VALIDATOR_REQUIRE()]}
+        errorText='Title is required'
+        onInput={inputHandler}
       />
-    </NewPlaceFormStyled>
+      <Input
+        id='description'
+        elementProp='textarea'
+        label='Description'
+        validators={[VALIDATOR_MINLENGTH(5)]}
+        errorText='Please enter a valid description (atleast 5 characters)'
+        onInput={inputHandler}
+      />
+      <Input
+        id='address'
+        elementProp='input'
+        label='Address'
+        validators={[VALIDATOR_REQUIRE()]}
+        errorText='Address is required'
+        onInput={inputHandler}
+      />
+      <Button type='submit' disabled={!formState.isValid}>
+        Add Place
+      </Button>
+    </NewDarkPlaceFormStyled>
   )
 }
 
 export default NewPlace
-
-// STYLING
-const NewPlaceFormStyled = styled.form`
-  list-style: none;
-  margin: 1rem auto;
-  padding: 1rem;
-  width: 90%;
-  max-width: 40rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-  border-radius: 6px;
-  background: white;
-`

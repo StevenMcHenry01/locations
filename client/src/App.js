@@ -1,5 +1,5 @@
 // 3rd party imports
-import React from 'react'
+import React, { useState, useCallback } from 'react'
 import GlobalStyles from './styles/global'
 import theme from 'styled-theming'
 import styled, { ThemeProvider } from 'styled-components'
@@ -11,41 +11,79 @@ import NewPlace from './pages/NewPlace'
 import NotFoundPage from './pages/NotFoundPage'
 import UserPlaces from './pages/UserPlaces'
 import MainNavigation from './components/Shared/Navigation/MainNavigation'
-import {Theme} from './styles/theme'
+import { Theme } from './styles/theme'
+import UpdatePlace from './pages/UpdatePlace'
+import Auth from './pages/Auth'
+import { AuthContext } from './context/auth-context'
 
 // ROUTES
-const routes = {
+const loggedInRoutes = {
   '/': () => <Users />,
   '/places/new': () => <NewPlace />,
-  '/:userId/places': ({userId}) => <UserPlaces userId={userId}/>
+  '/places/:placeId': ({ placeId }) => <UpdatePlace placeId={placeId} />,
+  '/:userId/places': ({ userId }) => <UserPlaces userId={userId} />
+}
+
+const loggedOutRoutes = {
+  '/': () => <Users />,
+  '/:userId/places': ({ userId }) => <UserPlaces userId={userId} />,
+  '/auth': () => <Auth />
 }
 
 export default function App() {
-  const [lightTheme, setLightTheme] = React.useState(true)
+  const [lightTheme, setLightTheme] = useState(true)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  let routes
+
+  if (isLoggedIn) {
+    routes = loggedInRoutes
+  } else {
+    routes = loggedOutRoutes
+  }
+
   const routeResult = useRoutes(routes)
 
   const changeThemeClickHandler = () => {
     setLightTheme(prevTheme => !prevTheme)
   }
 
+  const login = useCallback(() => {
+    setIsLoggedIn(true)
+  }, [])
+
+  const logout = useCallback(() => {
+    setIsLoggedIn(false)
+  }, [])
+
   return (
     <ThemeProvider theme={{ mode: 'light' }}>
-      <GlobalStyles />
-      <AppWrapper>
-        <MainNavigation
-          lightTheme={lightTheme}
-          changeThemeClickHandler={changeThemeClickHandler}
-        />
-        {lightTheme ? (
-          <ThemeProvider theme={{ mode: 'light' }}>
-            <PageWrapper>{routeResult || <NotFoundPage />}</PageWrapper>
-          </ThemeProvider>
-        ) : (
-          <ThemeProvider theme={{ mode: 'dark' }}>
-            <PageWrapper>{routeResult || <NotFoundPage />}</PageWrapper>
-          </ThemeProvider>
-        )}
-      </AppWrapper>
+      <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
+        <GlobalStyles />
+        <AppWrapper>
+          <MainNavigation
+            lightTheme={lightTheme}
+            changeThemeClickHandler={changeThemeClickHandler}
+          />
+          {lightTheme ? (
+            <ThemeProvider theme={{ mode: 'light' }}>
+              {isLoggedIn ? (
+                <PageWrapper>{routeResult || <NotFoundPage />}</PageWrapper>
+              ) : (
+                <PageWrapper>{routeResult || <Auth />}</PageWrapper>
+              )}
+            </ThemeProvider>
+          ) : (
+            <ThemeProvider theme={{ mode: 'dark' }}>
+            {isLoggedIn ? (
+                <PageWrapper>{routeResult || <NotFoundPage />}</PageWrapper>
+              ) : (
+                <PageWrapper>{routeResult || <Auth />}</PageWrapper>
+              )}
+            </ThemeProvider>
+          )}
+        </AppWrapper>
+      </AuthContext.Provider>
     </ThemeProvider>
   )
 }

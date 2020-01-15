@@ -2,7 +2,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { CSSTransition } from 'react-transition-group'
-import styled from 'styled-components'
 
 // My imports
 import Backdrop from './Backdrop'
@@ -50,5 +49,3 @@ const Modal = props => {
 }
 
 export default Modal
-
-// STYLING

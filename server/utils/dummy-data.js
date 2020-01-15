@@ -1,12 +1,6 @@
-// 3rd party imports
-import React from 'react'
-
-// My imports
-import PlaceList from '../components/Places/PlaceList'
-
 export const DUMMY_PLACES = [
   {
-    id: '1',
+    id: 'p1',
     title: 'Exploratorium',
     description: 'Fun place to go when visiting the city',
     imageUrl: 'https://bayareane.ws/2LV2C0W',
@@ -18,7 +12,7 @@ export const DUMMY_PLACES = [
     creator: 'u1'
   },
   {
-    id: '2',
+    id: 'p2',
     title: 'Coit Tower',
     description: 'Fun place to go when visiting the city',
     imageUrl: 'https://bit.ly/38DhXNp',
@@ -30,13 +24,3 @@ export const DUMMY_PLACES = [
     creator: 'u2'
   }
 ]
-
-const UserPlaces = ({ userId }) => {
-  return (
-    <PlaceList items={DUMMY_PLACES.filter(place => place.creator === userId)} />
-  )
-}
-
-export default UserPlaces
-
-// STYLING

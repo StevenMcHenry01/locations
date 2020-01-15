@@ -8,6 +8,7 @@ import Button from '../Shared/FormElements/Button/Button'
 import { Theme } from '../../styles/theme'
 import Modal from '../Shared/UIElements/Modal'
 import Map from '../Shared/UIElements/Map'
+import { AuthContext } from '../../context/auth-context'
 
 const PlaceItem = ({ place }) => {
   const {
@@ -19,12 +20,21 @@ const PlaceItem = ({ place }) => {
     coordinates,
     creatorId
   } = place
-  const { mode: theme } = useContext(ThemeContext)
 
+  const auth = useContext(AuthContext)
   const [showMap, setShowMap] = useState(false)
+  const [showConfirmModal, setShowConfirmModal] = useState(false)
 
   const openMapHandler = () => setShowMap(true)
   const closeMapHandler = () => setShowMap(false)
+
+  const openDeleteWarningHandler = () => setShowConfirmModal(true)
+  const closeDeleteWarningHandler = () => setShowConfirmModal(false)
+
+  const confirmDeleteHandler = () => {
+    console.log('Deleting...')
+    closeDeleteWarningHandler()
+  }
 
   return (
     <>
@@ -32,38 +42,57 @@ const PlaceItem = ({ place }) => {
         show={showMap}
         onCancel={closeMapHandler}
         header={address}
-        contentStyles={{padding: 0}}
-        footerStyles={{'textAlign': 'right'}}
+        contentStyles={{ padding: 0 }}
+        footerStyles={{ textAlign: 'right' }}
         footer={<Button onClick={closeMapHandler}>Close</Button>}
       >
         <MapContainerDivStyled>
-          <Map center={coordinates} zoom={16}/>
+          <Map center={coordinates} zoom={16} />
         </MapContainerDivStyled>
+      </Modal>
+      <Modal
+        show={showConfirmModal}
+        header='Are you sure?'
+        footer={
+          <>
+            <Button inverse onClick={closeDeleteWarningHandler}>
+              Cancel
+            </Button>
+            <Button danger onClick={confirmDeleteHandler}>
+              Delete
+            </Button>
+          </>
+        }
+        footerStyles={{}}
+      >
+        <p>Do you want to delete this place? This cannot be undone!</p>
       </Modal>
       <LiStyled>
         <CardStyled>
           <ImgStyled>
             <img src={imageUrl} alt={title} />
           </ImgStyled>
-          {theme === 'light' ? (
-            <InfoDivStyled>
-              <h2>{title}</h2>
-              <h3>{address}</h3>
-              <p>{description}</p>
-            </InfoDivStyled>
-          ) : (
-            <InfoDivStyled style={{ color: Theme.colors.black }}>
-              <h2>{title}</h2>
-              <h3>{address}</h3>
-              <p>{description}</p>
-            </InfoDivStyled>
-          )}
+
+          <InfoDivStyled>
+            <h2>{title}</h2>
+            <h3>{address}</h3>
+            <p>{description}</p>
+          </InfoDivStyled>
+
           <ActionsDivStyled>
-            <Button inverse onClick={openMapHandler}>View On Map</Button>
-            <Button route href={`/places/${id}`}>
-              Edit
+            <Button inverse onClick={openMapHandler}>
+              View On Map
             </Button>
-            <Button danger>Delete</Button>
+            {auth.isLoggedIn && (
+              <Button route href={`/places/${id}`}>
+                Edit
+              </Button>
+            )}
+            {auth.isLoggedIn && (
+              <Button danger onClick={openDeleteWarningHandler}>
+                Delete
+              </Button>
+            )}
           </ActionsDivStyled>
         </CardStyled>
       </LiStyled>

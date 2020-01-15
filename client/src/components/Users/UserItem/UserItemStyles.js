@@ -12,8 +12,6 @@ export const UserItemStyled = styled.li`
     height: 100%;
     text-decoration: none;
     padding: 1rem;
-    color: white;
-    background: #5e534f;
     &:hover,
     &:active {
       background: ${Theme.colors.secondaryColor};
@@ -41,6 +39,7 @@ export const UserInfoStyled = styled.div`
     color: ${Theme.colors.secondaryColor};
   }
   h3 {
+    color: ${Theme.colors.secondaryColor};
     margin: 0;
   }
 `
