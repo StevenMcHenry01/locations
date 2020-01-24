@@ -1,4 +1,4 @@
-export const DUMMY_PLACES = [
+export let DUMMY_PLACES = [
   {
     id: 'p1',
     title: 'Exploratorium',
@@ -24,3 +24,22 @@ export const DUMMY_PLACES = [
     creator: 'u2'
   }
 ]
+
+export const DUMMY_USERS = [
+  {
+    id: 'u1',
+    name: 'Steven McHenry',
+    email: 'WEOW@gmail.com',
+    password: '123'
+  },
+  {
+    id: 'u2',
+    name: 'Tim McHenry',
+    email: 'WEOW22@gmail.com',
+    password: '123'
+  }
+]
+
+export const setDUMMY_PLACES = (NEW_DUMMY_PLACES) => {
+  DUMMY_PLACES = NEW_DUMMY_PLACES
+}

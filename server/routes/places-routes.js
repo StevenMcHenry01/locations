@@ -1,39 +1,51 @@
 // 3rd Party Imports
 import express from 'express'
+import checkAPIs from 'express-validator'
+const { check } = checkAPIs
 
 // My Imports
-import {DUMMY_PLACES} from '../utils/dummy-data.js'
-import HttpError from '../models/http-error.js'
+import {
+  getPlaceById,
+  getPlacesByUserId,
+  createPlace,
+  updatePlaceById,
+  deletePlaceById
+} from '../controllers/places-controller.js'
 
 const router = express.Router()
 
-router.get('/user/:uid', (req, res, next)=> {
-  const userId = req.params.uid
-  const userPlaces = DUMMY_PLACES.filter(p=>p.creator === userId)
+// ~ CREATE
+router.post(
+  '/',
+  [
+    check('title')
+      .not()
+      .isEmpty(),
+    check('description').isLength({ min: 5 }),
+    check('address')
+      .not()
+      .isEmpty()
+  ],
+  createPlace
+)
 
-  // error check
-  if(!userPlaces) {
-    return next(new HttpError('Could not find place for provided user.', 404))
-  }
+// ~ READ
+router.get('/user/:uid', getPlacesByUserId)
+router.get('/:pid', getPlaceById)
 
-  res.json({userPlaces})
-})
+// ~ UPDATE
+router.patch(
+  '/:pid',
+  [
+    check('title')
+      .not()
+      .isEmpty(),
+    check('description').isLength({ min: 5 })
+  ],
+  updatePlaceById
+)
 
-/*
-should be last route to ensure it is not being used unintentionally.
-(Any route could be the :pid)
-*/
-router.get('/:pid', (req, res, next)=> {
-  const placeId = req.params.pid
-  const place = DUMMY_PLACES.find(p=>p.id === placeId)
-
-  // error check
-  if(!place) {
-    return next(new HttpError('Could not find a place for the provided id.', 404))
-  }
-
-  res.json({place})
-})
-
+// ~ DELETE
+router.delete('/:pid', deletePlaceById)
 
 export default router
