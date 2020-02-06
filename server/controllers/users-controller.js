@@ -36,7 +36,7 @@ export const signupNewUser = async (req, res, next) => {
     email,
     password,
     imageUrl:
-      'https://media-exp1.licdn.com/dms/image/C5103AQEFr6xIyCLGYA/profile-displayphoto-shrink_200_200/0?e=1585180800&v=beta&t=-229CTpOqSYzJWNmWGw2kzaJbnUYYYnHweuTocoIzrs',
+      'https://www.biography.com/.image/t_share/MTE5NDg0MDYwNjkzMjY3OTgz/terry-crews-headshot-600x600jpg.jpg',
     places: []
   })
 
@@ -65,8 +65,7 @@ export const loginUser = async (req, res, next) => {
   if (existingUser.password !== password) {
     return next(new HttpError('Incorrect Password', 401))
   }
-
-  res.json({ message: 'Logged in successfully' })
+  res.json({ user: existingUser.toObject({ getters: true }), message: 'Login Successful' })
 }
 
 // ~ READ

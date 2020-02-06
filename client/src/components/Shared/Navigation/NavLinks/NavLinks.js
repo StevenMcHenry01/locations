@@ -21,8 +21,7 @@ const NavLinks = () => {
       <NavLinkActiveCheck url='/' exact={true} linkName='All Users' />
       {auth.isLoggedIn && (
         <NavLinkActiveCheck
-          url='/u1/places'
-          startingIndex={4}
+          url={`/${auth.userId}/places`}
           linkName='My Places'
         />
       )}

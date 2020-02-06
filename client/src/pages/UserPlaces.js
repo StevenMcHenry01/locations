@@ -1,39 +1,53 @@
 // 3rd party imports
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 // My imports
 import PlaceList from '../components/Places/PlaceList'
-
-export const DUMMY_PLACES = [
-  {
-    id: '1',
-    title: 'Exploratorium',
-    description: 'Fun place to go when visiting the city',
-    imageUrl: 'https://bayareane.ws/2LV2C0W',
-    address: 'Pier 15, The Embarcadero, San Francisco, CA 94111',
-    coordinates: {
-      lat: 37.7989102,
-      lng: -122.4074185
-    },
-    creator: 'u1'
-  },
-  {
-    id: '2',
-    title: 'Coit Tower',
-    description: 'Fun place to go when visiting the city',
-    imageUrl: 'https://bit.ly/38DhXNp',
-    address: '1 Telegraph Hill Blvd, San Francisco, CA 94133',
-    coordinates: {
-      lat: 37.8023949,
-      lng: -122.4058222
-    },
-    creator: 'u2'
-  }
-]
+import { useHttpClient } from '../hooks/http-hook'
+import ErrorModal from '../components/Shared/UIElements/ErrorModal'
+import LoadingSpinner from '../components/Shared/UIElements/LoadingSpinner'
 
 const UserPlaces = ({ userId }) => {
+  const [loadedPlaces, setLoadedPlaces] = useState()
+  const { isLoading, error, sendRequest, clearError } = useHttpClient()
+
+  useEffect(() => {
+    const fetchPlaces = async () => {
+      try {
+        const response = await sendRequest(
+          `http://localhost:5000/api/places/user/${userId}`
+        )
+
+        if (response.status < 200 || response.status > 299) {
+          throw new Error(response)
+        }
+        setLoadedPlaces(response.data.places)
+      } catch (err) {}
+    }
+    fetchPlaces()
+  }, [sendRequest, userId])
+
+  const placeDeletedHandler = deletedPlaceId => {
+    setLoadedPlaces(prevPlaces =>
+      prevPlaces.filter(place => place.id !== deletedPlaceId)
+    )
+  }
+
   return (
-    <PlaceList items={DUMMY_PLACES.filter(place => place.creator === userId)} />
+    <>
+      <ErrorModal error={error} onClear={clearError} />
+      {isLoading && (
+        <div className='center'>
+          <LoadingSpinner />
+        </div>
+      )}
+      {!isLoading && loadedPlaces && (
+        <PlaceList
+          items={loadedPlaces}
+          onDeletePlace={placeDeletedHandler}
+        />
+      )}
+    </>
   )
 }
 

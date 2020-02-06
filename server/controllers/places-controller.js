@@ -98,7 +98,7 @@ export const getPlacesByUserId = async (req, res, next) => {
   }
 
   // error check
-  if (!places || places.length === 0) {
+  if (!places) {
     return next(new HttpError('Could not find places for provided user.', 404))
   }
 

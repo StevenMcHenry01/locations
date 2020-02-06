@@ -12,18 +12,18 @@ import {
 } from './UserItemStyles'
 
 const UserItem = ({ user }) => {
-  const { id, name, image, places } = user
+  const { id, name, imageUrl, places } = user
   return (
     <UserItemStyled>
       <Card style={{ padding: 0 }}>
         <A href={`/${id}/places`}>
           <UserImageStyled>
-            <Avatar image={image} alt={name} />
+            <Avatar image={imageUrl} alt={name} />
           </UserImageStyled>
           <UserInfoStyled>
             <h2>{name}</h2>
             <h3>
-              {places} {places.count === 1 ? 'Place' : 'Places'}
+              {places.length} {places.count === 1 ? 'Place' : 'Places'}
             </h3>
           </UserInfoStyled>
         </A>

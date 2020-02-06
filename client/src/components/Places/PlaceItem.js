@@ -9,8 +9,11 @@ import { Theme } from '../../styles/theme'
 import Modal from '../Shared/UIElements/Modal'
 import Map from '../Shared/UIElements/Map'
 import { AuthContext } from '../../context/auth-context'
+import { useHttpClient } from '../../hooks/http-hook'
+import ErrorModal from '../Shared/UIElements/ErrorModal'
+import LoadingSpinner from '../Shared/UIElements/LoadingSpinner'
 
-const PlaceItem = ({ place }) => {
+const PlaceItem = ({ place, onDelete }) => {
   const {
     id,
     title,
@@ -18,9 +21,10 @@ const PlaceItem = ({ place }) => {
     imageUrl,
     address,
     coordinates,
-    creatorId
+    creator
   } = place
 
+  const { isLoading, error, sendRequest, clearError } = useHttpClient()
   const auth = useContext(AuthContext)
   const [showMap, setShowMap] = useState(false)
   const [showConfirmModal, setShowConfirmModal] = useState(false)
@@ -31,13 +35,17 @@ const PlaceItem = ({ place }) => {
   const openDeleteWarningHandler = () => setShowConfirmModal(true)
   const closeDeleteWarningHandler = () => setShowConfirmModal(false)
 
-  const confirmDeleteHandler = () => {
-    console.log('Deleting...')
-    closeDeleteWarningHandler()
+  const confirmDeleteHandler = async () => {
+    setShowConfirmModal(false)
+    try {
+      await sendRequest(`http://localhost:5000/api/places/${id}`, 'DELETE')
+      onDelete(id)
+    } catch (err) {}
   }
 
   return (
     <>
+    <ErrorModal error={error} onClear={clearError}/>
       <Modal
         show={showMap}
         onCancel={closeMapHandler}
@@ -69,6 +77,7 @@ const PlaceItem = ({ place }) => {
       </Modal>
       <LiStyled>
         <CardStyled>
+          {isLoading && <LoadingSpinner asOverlay/>}
           <ImgStyled>
             <img src={imageUrl} alt={title} />
           </ImgStyled>
@@ -83,12 +92,12 @@ const PlaceItem = ({ place }) => {
             <Button inverse onClick={openMapHandler}>
               View On Map
             </Button>
-            {auth.isLoggedIn && (
+            {auth.userId === creator && (
               <Button route href={`/places/${id}`}>
                 Edit
               </Button>
             )}
-            {auth.isLoggedIn && (
+            {auth.userId === creator && (
               <Button danger onClick={openDeleteWarningHandler}>
                 Delete
               </Button>

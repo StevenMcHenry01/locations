@@ -33,6 +33,7 @@ const loggedOutRoutes = {
 export default function App() {
   const [lightTheme, setLightTheme] = useState(true)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [userId, setUserId] = useState();
 
   let routes
 
@@ -48,17 +49,19 @@ export default function App() {
     setLightTheme(prevTheme => !prevTheme)
   }
 
-  const login = useCallback(() => {
+  const login = useCallback(uid => {
     setIsLoggedIn(true)
+    setUserId(uid)
   }, [])
 
   const logout = useCallback(() => {
     setIsLoggedIn(false)
+    setUserId(null)
   }, [])
 
   return (
     <ThemeProvider theme={{ mode: 'light' }}>
-      <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
+      <AuthContext.Provider value={{ isLoggedIn,userId, login, logout }}>
         <GlobalStyles />
         <AppWrapper>
           <MainNavigation

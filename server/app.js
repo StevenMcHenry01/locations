@@ -11,17 +11,30 @@ import HttpError from './models/http-error.js'
 const app = express()
 
 // ~ Mongoose Config
-const connectUrl = 'mongodb+srv://Steven:Qt7bjZXDDSXQz84H@cluster0-clh7e.mongodb.net/locations?retryWrites=true&w=majority'
+const connectUrl =
+  'mongodb+srv://Steven:Qt7bjZXDDSXQz84H@cluster0-clh7e.mongodb.net/locations?retryWrites=true&w=majority'
 
-const connectConfig = { 
-  useNewUrlParser: true, 
-  useUnifiedTopology: true, 
-  useCreateIndex: true 
+const connectConfig = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true
 }
- 
+
 // ~ MiddleWare
 // parse json data and return an object
 app.use(bodyParser.json())
+
+// CORS 🤮
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+  )
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE')
+
+  next()
+})
 
 // ~ Routes
 app.use('/api/places', placesRoutes)
@@ -48,7 +61,10 @@ app.use((error, req, res, next) => {
 mongoose
   .connect(connectUrl, connectConfig)
   .then(() => {
-    console.log('Database successfully connected. \n' + 'Listenening at http://localhost:5000' )
+    console.log(
+      'Database successfully connected. \n' +
+        'Listenening at http://localhost:5000'
+    )
     app.listen(5000)
   })
   .catch(err => console.log(err))

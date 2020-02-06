@@ -7,7 +7,7 @@ import PlaceItem from './PlaceItem'
 import Card from '../Shared/UIElements/Card'
 import Button from '../Shared/FormElements/Button/Button'
 
-const PlaceList = ({ items }) => {
+const PlaceList = ({ items, onDeletePlace }) => {
   if (items.length === 0) {
     return (
       <DivStyled>
@@ -24,7 +24,7 @@ const PlaceList = ({ items }) => {
   return (
     <UlStyled>
       {items.map(place => (
-        <PlaceItem key={place.id} place={place} />
+        <PlaceItem key={place.id} place={place} onDelete={onDeletePlace}/>
       ))}
     </UlStyled>
   )
