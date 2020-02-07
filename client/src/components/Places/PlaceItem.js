@@ -1,11 +1,10 @@
 // 3rd party imports
 import React, { useContext, useState } from 'react'
-import styled, { ThemeContext } from 'styled-components'
+import styled from 'styled-components'
 
 // My imports
 import Card from '../Shared/UIElements/Card'
 import Button from '../Shared/FormElements/Button/Button'
-import { Theme } from '../../styles/theme'
 import Modal from '../Shared/UIElements/Modal'
 import Map from '../Shared/UIElements/Map'
 import { AuthContext } from '../../context/auth-context'

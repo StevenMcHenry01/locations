@@ -1,8 +1,7 @@
 // 3rd party imports
-import React, { useContext, useState, useEffect } from 'react'
-import styled, { ThemeContext } from 'styled-components'
+import React, { useContext, useState } from 'react'
+import { ThemeContext } from 'styled-components'
 import { navigate } from 'hookrouter'
-import axios from 'axios'
 
 // My imports
 import Input from '../components/Shared/FormElements/Input/Input'
@@ -19,15 +18,22 @@ import {
 import { useForm } from '../hooks/form-hook'
 import { useHttpClient } from '../hooks/http-hook'
 import Card from '../components/Shared/UIElements/Card'
+import ImageUpload from '../components/Shared/FormElements/ImageUpload'
 import { AuthContext } from '../context/auth-context'
 import LoadingSpinner from '../components/Shared/UIElements/LoadingSpinner'
 import ErrorModal from '../components/Shared/UIElements/ErrorModal'
 
 const Auth = () => {
+  // ~ Contexts
   const { mode: theme } = useContext(ThemeContext)
+  const FormStyled = theme === 'light' ? LightFormStyled : DarkFormStyled
+
   const auth = useContext(AuthContext)
 
+  // ~ State
   const [isLoginMode, setIsLoginMode] = useState(true)
+
+  // ~ Hooks
   const { isLoading, error, sendRequest, clearError } = useHttpClient()
 
   const [formState, inputHandler, setFormData] = useForm(
@@ -44,12 +50,14 @@ const Auth = () => {
     false
   )
 
+  // ~ Functions
   const switchModeHandler = () => {
     if (!isLoginMode) {
       setFormData(
         {
           ...formState.inputs,
-          name: undefined
+          name: undefined,
+          image: undefined
         },
         formState.inputs.email.isValid,
         formState.inputs.password.isValid
@@ -61,6 +69,10 @@ const Auth = () => {
           name: {
             value: '',
             isValid: false
+          },
+          image: {
+            value: null,
+            isValid: false
           }
         },
         false
@@ -71,6 +83,8 @@ const Auth = () => {
 
   const authSubmitHandler = async event => {
     event.preventDefault()
+
+    console.log(formState.inputs)
 
     if (isLoginMode) {
       try {
@@ -120,62 +134,18 @@ const Auth = () => {
     }
   }
 
-
-  if (theme === 'light') {
-    return (
-      <div className='center'>
-        <ErrorModal error={error} onClear={clearError} />
-        <Card>
-          {isLoading && <LoadingSpinner asOverlay />}
-          <h2 style={{ textAlign: 'center' }}>Login Required</h2>
-          <hr />
-          <AuthLightFormStyled onSubmit={authSubmitHandler}>
-            {!isLoginMode && (
-              <Input
-                elementProp='input'
-                id='name'
-                type='text'
-                label='Your Name'
-                validators={[VALIDATOR_REQUIRE()]}
-                errorText='Please enter a name'
-                onInput={inputHandler}
-              />
-            )}
-            <Input
-              id='email'
-              elementProp='input'
-              type='email'
-              label='Email'
-              validators={[VALIDATOR_EMAIL(), VALIDATOR_MINLENGTH(5)]}
-              errorText='Invalid Email'
-              onInput={inputHandler}
-            />
-            <Input
-              id='password'
-              type='password'
-              elementProp='input'
-              label='Password'
-              validators={[VALIDATOR_MINLENGTH(6)]}
-              errorText='Please enter a valid password (atleast 6 characters)'
-              onInput={inputHandler}
-            />
-            <Button type='submit' disabled={!formState.isValid}>
-              {isLoginMode ? 'Login' : 'Sign Up'}
-            </Button>
-          </AuthLightFormStyled>
-          <Button inverse onClick={switchModeHandler}>
-            {isLoginMode ? 'Sign Up' : 'Already have an account?'}
-          </Button>
-        </Card>
-      </div>
-    )
-  }
+  // ~ UI
   return (
     <div className='center'>
+      <ErrorModal error={error} onClear={clearError} />
       <Card>
+        {isLoading && <LoadingSpinner asOverlay />}
         <h2 style={{ textAlign: 'center' }}>Login Required</h2>
         <hr />
-        <AuthDarkFormStyled onSubmit={authSubmitHandler}>
+        <FormStyled
+          onSubmit={authSubmitHandler}
+          style={{ width: '25rem', boxShadow: 'none' }}
+        >
           {!isLoginMode && (
             <Input
               elementProp='input'
@@ -186,6 +156,9 @@ const Auth = () => {
               errorText='Please enter a name'
               onInput={inputHandler}
             />
+          )}
+          {!isLoginMode && (
+            <ImageUpload center id='image' onInput={inputHandler} />
           )}
           <Input
             id='email'
@@ -208,7 +181,7 @@ const Auth = () => {
           <Button type='submit' disabled={!formState.isValid}>
             {isLoginMode ? 'Login' : 'Sign Up'}
           </Button>
-        </AuthDarkFormStyled>
+        </FormStyled>
         <Button inverse onClick={switchModeHandler}>
           {isLoginMode ? 'Sign Up' : 'Already have an account?'}
         </Button>
@@ -218,14 +191,3 @@ const Auth = () => {
 }
 
 export default Auth
-
-//STYLING
-const AuthLightFormStyled = styled(LightFormStyled)`
-  width: 25rem;
-  box-shadow: none;
-`
-
-const AuthDarkFormStyled = styled(DarkFormStyled)`
-  width: 25rem;
-  box-shadow: none;
-`

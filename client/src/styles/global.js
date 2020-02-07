@@ -118,7 +118,7 @@ export default createGlobalStyle`
     transition: all 200ms;
   }
 
-  // INVALID FORM HANDLER
+  // Forms
   .form__invalid {
     label, p {
     color: red;

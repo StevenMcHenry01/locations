@@ -1,6 +1,5 @@
 // 3rd party imports
 import React, { useEffect, useState } from 'react'
-import axios from 'axios'
 
 // My imports
 import UsersList from '../components/Users/UsersList'

@@ -6,11 +6,11 @@ export const useHttpClient = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState()
 
-  const signal = axios.CancelToken.source()
-
   const sendRequest = useCallback(
     async (url, method = 'GET', data = null, headers = {}) => {
       setIsLoading(true)
+
+      const signal = axios.CancelToken.source()
 
       try {
         const response = await axios(url, {
@@ -45,6 +45,7 @@ export const useHttpClient = () => {
   }
 
   useEffect(() => {
+    const signal = axios.CancelToken.source()
     return () => {
       signal.cancel('Cancelling occured. Oops')
     }
