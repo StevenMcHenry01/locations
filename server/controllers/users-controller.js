@@ -10,9 +10,9 @@ import User from '../models/user-model.js'
 export const signupNewUser = async (req, res, next) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
-    console.log(errors)
     return next(new HttpError('Invalid inputs given', 422))
   }
+
   const { name, email, password } = req.body
 
   let existingUser
@@ -35,8 +35,7 @@ export const signupNewUser = async (req, res, next) => {
     name,
     email,
     password,
-    imageUrl:
-      'https://www.biography.com/.image/t_share/MTE5NDg0MDYwNjkzMjY3OTgz/terry-crews-headshot-600x600jpg.jpg',
+    image: req.file.path,
     places: []
   })
 

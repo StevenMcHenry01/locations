@@ -4,6 +4,8 @@ import checkAPIs from 'express-validator'
 const { check } = checkAPIs
 
 // My Imports
+import fileUpload from '../middleware/file-upload.js'
+
 import {
   getPlaceById,
   getPlacesByUserId,
@@ -17,6 +19,7 @@ const router = express.Router()
 // ~ CREATE
 router.post(
   '/',
+  fileUpload.single('image'),
   [
     check('title')
       .not()

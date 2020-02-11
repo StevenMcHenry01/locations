@@ -3,7 +3,7 @@ export let DUMMY_PLACES = [
     id: 'p1',
     title: 'Exploratorium',
     description: 'Fun place to go when visiting the city',
-    imageUrl: 'https://bayareane.ws/2LV2C0W',
+    image: 'https://bayareane.ws/2LV2C0W',
     address: 'Pier 15, The Embarcadero, San Francisco, CA 94111',
     coordinates: {
       lat: 37.7989102,
@@ -15,7 +15,7 @@ export let DUMMY_PLACES = [
     id: 'p2',
     title: 'Coit Tower',
     description: 'Fun place to go when visiting the city',
-    imageUrl: 'https://bit.ly/38DhXNp',
+    image: 'https://bit.ly/38DhXNp',
     address: '1 Telegraph Hill Blvd, San Francisco, CA 94133',
     coordinates: {
       lat: 37.8023949,

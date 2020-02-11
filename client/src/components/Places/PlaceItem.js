@@ -17,7 +17,7 @@ const PlaceItem = ({ place, onDelete }) => {
     id,
     title,
     description,
-    imageUrl,
+    image,
     address,
     coordinates,
     creator
@@ -78,7 +78,7 @@ const PlaceItem = ({ place, onDelete }) => {
         <CardStyled>
           {isLoading && <LoadingSpinner asOverlay/>}
           <ImgStyled>
-            <img src={imageUrl} alt={title} />
+            <img src={`http://localhost:5000/${image}`} alt={title} />
           </ImgStyled>
 
           <InfoDivStyled>

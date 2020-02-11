@@ -84,8 +84,6 @@ const Auth = () => {
   const authSubmitHandler = async event => {
     event.preventDefault()
 
-    console.log(formState.inputs)
-
     if (isLoginMode) {
       try {
         const response = await sendRequest(
@@ -110,17 +108,16 @@ const Auth = () => {
       }
     } else {
       try {
+        // formData object necessary when sending image file along with json
+        const formData = new FormData()
+        formData.append('email', formState.inputs.email.value)
+        formData.append('name', formState.inputs.name.value)
+        formData.append('password', formState.inputs.password.value)
+        formData.append('image', formState.inputs.image.value)
         const response = await sendRequest(
           'http://localhost:5000/api/users/signup',
           'POST',
-          JSON.stringify({
-            name: formState.inputs.name.value,
-            email: formState.inputs.email.value,
-            password: formState.inputs.password.value
-          }),
-          {
-            'Content-Type': 'application/json'
-          }
+          formData
         )
 
         if (response.status < 200 || response.status > 299) {
@@ -129,7 +126,6 @@ const Auth = () => {
         auth.login(response.data.id)
         navigate('/')
       } catch (err) {
-        console.log(err)
       }
     }
   }
@@ -158,7 +154,7 @@ const Auth = () => {
             />
           )}
           {!isLoginMode && (
-            <ImageUpload center id='image' onInput={inputHandler} />
+            <ImageUpload center id='image' onInput={inputHandler} errorText="Please upload an image to use for your profile"/>
           )}
           <Input
             id='email'

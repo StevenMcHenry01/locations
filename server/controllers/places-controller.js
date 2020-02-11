@@ -3,6 +3,7 @@ import checkAPIs from 'express-validator'
 const { validationResult } = checkAPIs
 import { getCoordsForAddress } from '../utils/location.js'
 import mongoose from 'mongoose'
+import fs from 'fs'
 
 // My Imports
 import HttpError from '../models/http-error.js'
@@ -13,7 +14,6 @@ import User from '../models/user-model.js'
 export const createPlace = async (req, res, next) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
-    console.log(errors)
     return next(new HttpError('Invalid inputs given', 422))
   }
 
@@ -31,8 +31,7 @@ export const createPlace = async (req, res, next) => {
     description,
     address,
     coordinates,
-    imageUrl:
-      'https://www.csemag.com/wp-content/uploads/sites/5/2019/07/CSE1907_MAG_CODES_MEDICAL_02-1024x768.jpg',
+    image: req.file.path,
     creator
   })
 
@@ -151,6 +150,8 @@ export const deletePlaceById = async (req, res, next) => {
     return next(new HttpError('Could not find place for specified ID.', 404))
   }
 
+  const imagePath = place.image
+
   try {
     const session = await mongoose.startSession()
     session.startTransaction()
@@ -161,6 +162,11 @@ export const deletePlaceById = async (req, res, next) => {
   } catch (err) {
     return next(new HttpError('Error deleting place.', 500))
   }
+
+  // delete image
+  fs.unlink(imagePath, err => {
+    console.log(err)
+  })
 
   res.status(200).json({ message: 'Deleted place successfully' })
 }

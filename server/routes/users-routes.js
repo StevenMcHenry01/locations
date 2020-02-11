@@ -9,12 +9,14 @@ import {
   signupNewUser,
   loginUser
 } from '../controllers/users-controller.js'
+import fileUpload from '../middleware/file-upload.js'
 
 const router = express.Router()
 
 // ~ CREATE
 router.post(
   '/signup',
+  fileUpload.single('image'),
   [
     check('name')
       .not()

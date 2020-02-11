@@ -13,7 +13,7 @@ const PlaceList = ({ items, onDeletePlace }) => {
       <DivStyled>
         <Card>
           <h2>No places found for user.</h2>
-          <Button a href='/places/new'>
+          <Button route href='/places/new'>
             Share Place
           </Button>
         </Card>
