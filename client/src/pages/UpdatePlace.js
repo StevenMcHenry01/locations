@@ -40,7 +40,6 @@ const UpdatePlace = ({ placeId }) => {
     false
   )
 
-  console.log(auth)
   useEffect(() => {
     const fetchPlace = async () => {
       try {
@@ -79,7 +78,8 @@ const UpdatePlace = ({ placeId }) => {
           description: formState.inputs.description.value
         }),
         {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + auth.token
         }
       )
       navigate(`/${auth.userId}/places`)

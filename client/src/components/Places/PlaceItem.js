@@ -13,15 +13,7 @@ import ErrorModal from '../Shared/UIElements/ErrorModal'
 import LoadingSpinner from '../Shared/UIElements/LoadingSpinner'
 
 const PlaceItem = ({ place, onDelete }) => {
-  const {
-    id,
-    title,
-    description,
-    image,
-    address,
-    coordinates,
-    creator
-  } = place
+  const { id, title, description, image, address, coordinates, creator } = place
 
   const { isLoading, error, sendRequest, clearError } = useHttpClient()
   const auth = useContext(AuthContext)
@@ -37,14 +29,16 @@ const PlaceItem = ({ place, onDelete }) => {
   const confirmDeleteHandler = async () => {
     setShowConfirmModal(false)
     try {
-      await sendRequest(`http://localhost:5000/api/places/${id}`, 'DELETE')
+      await sendRequest(`http://localhost:5000/api/places/${id}`, 'DELETE', null,{
+        Authorization: 'Bearer ' + auth.token
+      })
       onDelete(id)
     } catch (err) {}
   }
 
   return (
     <>
-    <ErrorModal error={error} onClear={clearError}/>
+      <ErrorModal error={error} onClear={clearError} />
       <Modal
         show={showMap}
         onCancel={closeMapHandler}
@@ -76,7 +70,7 @@ const PlaceItem = ({ place, onDelete }) => {
       </Modal>
       <LiStyled>
         <CardStyled>
-          {isLoading && <LoadingSpinner asOverlay/>}
+          {isLoading && <LoadingSpinner asOverlay />}
           <ImgStyled>
             <img src={`http://localhost:5000/${image}`} alt={title} />
           </ImgStyled>

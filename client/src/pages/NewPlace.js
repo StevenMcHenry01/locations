@@ -62,7 +62,10 @@ const NewPlace = () => {
       const response = await sendRequest(
         'http://localhost:5000/api/places',
         'POST',
-        formData
+        formData,
+        {
+          Authorization: 'Bearer ' + auth.token
+        }
       )
 
       if (response.status < 200 || response.status > 299) {

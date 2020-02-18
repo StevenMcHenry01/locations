@@ -1,6 +1,8 @@
 // 3rd Part Imports
 import checkAPIs from 'express-validator'
 const { validationResult } = checkAPIs
+import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
 
 // My Imports
 import HttpError from '../models/http-error.js'
@@ -31,10 +33,17 @@ export const signupNewUser = async (req, res, next) => {
     )
   }
 
+  let hashedPassword
+  try {
+    hashedPassword = await bcrypt.hash(password, 12) // encrypt with 12 salting rounds (sturdy)
+  } catch (err) {
+    return next(new HttpError('Could not create user. Please try again', 500))
+  }
+
   const createdUser = new User({
     name,
     email,
-    password,
+    password: hashedPassword,
     image: req.file.path,
     places: []
   })
@@ -42,10 +51,27 @@ export const signupNewUser = async (req, res, next) => {
   try {
     await createdUser.save()
   } catch (err) {
-    new HttpError('Error creating new user.', 500)
+    return next(new HttpError('Error creating new user.', 500))
   }
 
-  res.status(201).json({ user: createdUser.toObject({ getters: true }) })
+  // generate jwt
+  let token
+  try {
+    token = jwt.sign(
+      {
+        userId: createdUser.id,
+        email: createdUser.email
+      },
+      'supersecret_secret',
+      { expiresIn: '1h' }
+    )
+  } catch (err) {
+    return next(new HttpError('Error creating new user.', 500))
+  }
+
+  res
+    .status(201)
+    .json({ userId: createdUser.id, email: createdUser.email, token })
 }
 
 export const loginUser = async (req, res, next) => {
@@ -61,10 +87,42 @@ export const loginUser = async (req, res, next) => {
   if (!existingUser) {
     return next(new HttpError('No user found', 401))
   }
-  if (existingUser.password !== password) {
-    return next(new HttpError('Incorrect Password', 401))
+
+  // compare provided password to hashed pw in db
+  let isValidPassword = false
+  try {
+    isValidPassword = await bcrypt.compare(password, existingUser.password)
+  } catch (error) {
+    return next(
+      new HttpError('Error logging in. Please check provided credentials', 500)
+    )
   }
-  res.json({ user: existingUser.toObject({ getters: true }), message: 'Login Successful' })
+
+  if (!isValidPassword) {
+    return next(new HttpError('Invalid credentials', 401))
+  }
+
+  // generate jwt
+  let token
+  try {
+    token = jwt.sign(
+      {
+        userId: existingUser.id,
+        email: existingUser.email
+      },
+      'supersecret_secret',
+      { expiresIn: '1h' }
+    )
+  } catch (err) {
+    return next(new HttpError('Error loggin in.', 500))
+  }
+
+  res.json({
+    userId: existingUser.id,
+    email: existingUser.email,
+    token,
+    message: 'Login Successful'
+  })
 }
 
 // ~ READ

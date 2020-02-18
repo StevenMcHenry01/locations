@@ -5,6 +5,7 @@ const { check } = checkAPIs
 
 // My Imports
 import fileUpload from '../middleware/file-upload.js'
+import checkAuth from '../middleware/check-auth.js'
 
 import {
   getPlaceById,
@@ -15,6 +16,13 @@ import {
 } from '../controllers/places-controller.js'
 
 const router = express.Router()
+
+// ~ READ
+router.get('/user/:uid', getPlacesByUserId)
+router.get('/:pid', getPlaceById)
+
+// ~ Middleware AUTH
+router.use(checkAuth)
 
 // ~ CREATE
 router.post(
@@ -31,10 +39,6 @@ router.post(
   ],
   createPlace
 )
-
-// ~ READ
-router.get('/user/:uid', getPlacesByUserId)
-router.get('/:pid', getPlaceById)
 
 // ~ UPDATE
 router.patch(

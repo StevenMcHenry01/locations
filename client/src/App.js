@@ -32,12 +32,12 @@ const loggedOutRoutes = {
 
 export default function App() {
   const [lightTheme, setLightTheme] = useState(true)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [userId, setUserId] = useState();
+  const [token, setToken] = useState(null)
+  const [userId, setUserId] = useState(null)
 
   let routes
 
-  if (isLoggedIn) {
+  if (token) {
     routes = loggedInRoutes
   } else {
     routes = loggedOutRoutes
@@ -49,19 +49,21 @@ export default function App() {
     setLightTheme(prevTheme => !prevTheme)
   }
 
-  const login = useCallback(uid => {
-    setIsLoggedIn(true)
+  const login = useCallback((uid, token) => {
+    setToken(token)
     setUserId(uid)
   }, [])
 
   const logout = useCallback(() => {
-    setIsLoggedIn(false)
+    setToken(null)
     setUserId(null)
   }, [])
 
   return (
     <ThemeProvider theme={{ mode: 'light' }}>
-      <AuthContext.Provider value={{ isLoggedIn,userId, login, logout }}>
+      <AuthContext.Provider
+        value={{ isLoggedIn: !!token, token, userId, login, logout }}
+      >
         <GlobalStyles />
         <AppWrapper>
           <MainNavigation
@@ -70,7 +72,7 @@ export default function App() {
           />
           {lightTheme ? (
             <ThemeProvider theme={{ mode: 'light' }}>
-              {isLoggedIn ? (
+              {token ? (
                 <PageWrapper>{routeResult || <NotFoundPage />}</PageWrapper>
               ) : (
                 <PageWrapper>{routeResult || <Auth />}</PageWrapper>
@@ -78,7 +80,7 @@ export default function App() {
             </ThemeProvider>
           ) : (
             <ThemeProvider theme={{ mode: 'dark' }}>
-            {isLoggedIn ? (
+              {token ? (
                 <PageWrapper>{routeResult || <NotFoundPage />}</PageWrapper>
               ) : (
                 <PageWrapper>{routeResult || <Auth />}</PageWrapper>

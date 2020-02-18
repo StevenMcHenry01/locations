@@ -101,8 +101,7 @@ const Auth = () => {
         if (response.status < 200 || response.status > 299) {
           throw new Error(response)
         }
-        auth.login(response.data.user.id)
-        navigate('/')
+        auth.login(response.data.userId, response.data.token)
       } catch (err) {
         console.log(err)
       }
@@ -123,11 +122,10 @@ const Auth = () => {
         if (response.status < 200 || response.status > 299) {
           throw new Error(response)
         }
-        auth.login(response.data.id)
-        navigate('/')
-      } catch (err) {
-      }
+        auth.login(response.dataId, response.data.token)
+      } catch (err) {}
     }
+    navigate('/')
   }
 
   // ~ UI
@@ -154,7 +152,12 @@ const Auth = () => {
             />
           )}
           {!isLoginMode && (
-            <ImageUpload center id='image' onInput={inputHandler} errorText="Please upload an image to use for your profile"/>
+            <ImageUpload
+              center
+              id='image'
+              onInput={inputHandler}
+              errorText='Please upload an image to use for your profile'
+            />
           )}
           <Input
             id='email'
