@@ -14,7 +14,7 @@ const Users = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await sendRequest('http://localhost:5000/api/users')
+        const response = await sendRequest(`${process.env.REACT_APP_BACKEND_URL}/users`)
 
         if (response.status < 200 || response.status > 299) {
           throw new Error(response)

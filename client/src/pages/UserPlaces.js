@@ -15,7 +15,7 @@ const UserPlaces = ({ userId }) => {
     const fetchPlaces = async () => {
       try {
         const response = await sendRequest(
-          `http://localhost:5000/api/places/user/${userId}`
+          `${process.env.REACT_APP_BACKEND_URL}/places/user/${userId}`
         )
 
         if (response.status < 200 || response.status > 299) {

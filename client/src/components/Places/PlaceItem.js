@@ -29,7 +29,7 @@ const PlaceItem = ({ place, onDelete }) => {
   const confirmDeleteHandler = async () => {
     setShowConfirmModal(false)
     try {
-      await sendRequest(`http://localhost:5000/api/places/${id}`, 'DELETE', null,{
+      await sendRequest(`${process.env.REACT_APP_BACKEND_URL}/places/${id}`, 'DELETE', null,{
         Authorization: 'Bearer ' + auth.token
       })
       onDelete(id)
@@ -72,7 +72,7 @@ const PlaceItem = ({ place, onDelete }) => {
         <CardStyled>
           {isLoading && <LoadingSpinner asOverlay />}
           <ImgStyled>
-            <img src={`http://localhost:5000/${image}`} alt={title} />
+            <img src={`${process.env.REACT_APP_ASSET_URL}/${image}`} alt={title} />
           </ImgStyled>
 
           <InfoDivStyled>

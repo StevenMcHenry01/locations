@@ -14,7 +14,7 @@ const app = express()
 
 // ~ Mongoose Config
 const connectUrl =
-  'mongodb+srv://Steven:Qt7bjZXDDSXQz84H@cluster0-clh7e.mongodb.net/locations?retryWrites=true&w=majority'
+  `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0-clh7e.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`
 
 const connectConfig = {
   useNewUrlParser: true,
@@ -72,8 +72,7 @@ mongoose
   .connect(connectUrl, connectConfig)
   .then(() => {
     console.log(
-      'Database successfully connected. \n' +
-        'Listenening at http://localhost:5000'
+      'Database successfully connected. \n'
     )
     app.listen(5000)
   })

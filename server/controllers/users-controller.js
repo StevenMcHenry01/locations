@@ -62,7 +62,7 @@ export const signupNewUser = async (req, res, next) => {
         userId: createdUser.id,
         email: createdUser.email
       },
-      'supersecret_secret',
+      process.env.JWT_KEY,
       { expiresIn: '1h' }
     )
   } catch (err) {
@@ -110,7 +110,7 @@ export const loginUser = async (req, res, next) => {
         userId: existingUser.id,
         email: existingUser.email
       },
-      'supersecret_secret',
+      process.env.JWT_KEY,
       { expiresIn: '1h' }
     )
   } catch (err) {

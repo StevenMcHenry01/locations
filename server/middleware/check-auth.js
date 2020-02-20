@@ -16,7 +16,7 @@ export default (req, res, next) => {
       throw new Error('Authentication failed.')
     }
     // validate token - error will jump to catch block
-    const decodedToken = jwt.verify(token, 'supersecret_secret')
+    const decodedToken = jwt.verify(token, process.env.JWT_KEY)
     // add user data to each request
     req.userData = {userId: decodedToken.userId}
     next()

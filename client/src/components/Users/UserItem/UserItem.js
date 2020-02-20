@@ -18,7 +18,7 @@ const UserItem = ({ user }) => {
       <Card style={{ padding: 0 }}>
         <A href={`/${id}/places`}>
           <UserImageStyled>
-            <Avatar image={`http://localhost:5000/${image}`} alt={name} />
+            <Avatar image={`${process.env.REACT_APP_ASSET_URL}/${image}`} alt={name} />
           </UserImageStyled>
           <UserInfoStyled>
             <h2>{name}</h2>
