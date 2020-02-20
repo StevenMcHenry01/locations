@@ -99,7 +99,7 @@ export const loginUser = async (req, res, next) => {
   }
 
   if (!isValidPassword) {
-    return next(new HttpError('Invalid credentials', 401))
+    return next(new HttpError('Invalid credentials', 403))
   }
 
   // generate jwt

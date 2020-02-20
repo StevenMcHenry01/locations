@@ -21,6 +21,6 @@ export default (req, res, next) => {
     req.userData = {userId: decodedToken.userId}
     next()
   } catch (err) {
-    return next(new HttpError('Authentication failed.', 401))
+    return next(new HttpError('Authentication failed.', 403))
   }
 }

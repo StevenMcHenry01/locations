@@ -1,5 +1,5 @@
 // 3rd party imports
-import React, { useState, useCallback } from 'react'
+import React, { useState } from 'react'
 import GlobalStyles from './styles/global'
 import theme from 'styled-theming'
 import styled, { ThemeProvider } from 'styled-components'
@@ -15,6 +15,7 @@ import { Theme } from './styles/theme'
 import UpdatePlace from './pages/UpdatePlace'
 import Auth from './pages/Auth'
 import { AuthContext } from './context/auth-context'
+import { useAuth } from './hooks/auth-hook'
 
 // ROUTES
 const loggedInRoutes = {
@@ -32,8 +33,8 @@ const loggedOutRoutes = {
 
 export default function App() {
   const [lightTheme, setLightTheme] = useState(true)
-  const [token, setToken] = useState(null)
-  const [userId, setUserId] = useState(null)
+
+  const { token, login, logout, userId } = useAuth()
 
   let routes
 
@@ -48,16 +49,6 @@ export default function App() {
   const changeThemeClickHandler = () => {
     setLightTheme(prevTheme => !prevTheme)
   }
-
-  const login = useCallback((uid, token) => {
-    setToken(token)
-    setUserId(uid)
-  }, [])
-
-  const logout = useCallback(() => {
-    setToken(null)
-    setUserId(null)
-  }, [])
 
   return (
     <ThemeProvider theme={{ mode: 'light' }}>

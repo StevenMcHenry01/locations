@@ -17,7 +17,7 @@ export const createPlace = async (req, res, next) => {
     return next(new HttpError('Invalid inputs given', 422))
   }
 
-  const { title, description, address, creator } = req.body
+  const { title, description, address } = req.body
 
   let coordinates
   try {
@@ -26,19 +26,24 @@ export const createPlace = async (req, res, next) => {
     return next(error)
   }
 
-  const createdPlace = new Place({
-    title,
-    description,
-    address,
-    coordinates,
-    image: req.file.path,
-    creator
-  })
+  let createdPlace
+  if (req.file && req.userData) {
+    createdPlace = new Place({
+      title,
+      description,
+      address,
+      coordinates,
+      image: req.file.path,
+      creator: req.userData.userId
+    })
+  } else {
+    return next(new HttpError('Error on backend.', 500))
+  }
 
   // check if user exists
   let user
   try {
-    user = await User.findById(creator)
+    user = await User.findById(req.userData.userId)
   } catch (err) {
     return next(new HttpError('Creating place failed, please try again.', 500))
   }
@@ -122,6 +127,13 @@ export const updatePlaceById = async (req, res, next) => {
     return next(new HttpError('Error finding place.', 500))
   }
 
+  // make sure correct user is editing their own place
+  if (place.creator.toString() !== req.userData.userId) {
+    return next(
+      new HttpError('You are not authorized to edit this location.', 401)
+    )
+  }
+
   place.title = title
   place.description = description
 
@@ -148,6 +160,12 @@ export const deletePlaceById = async (req, res, next) => {
   // make sure place exists
   if (!place) {
     return next(new HttpError('Could not find place for specified ID.', 404))
+  }
+
+  if (place.creator.id !== req.userData.userId) {
+    return next(
+      new HttpError('You are not authorized to delete this location.', 401)
+    )
   }
 
   const imagePath = place.image
