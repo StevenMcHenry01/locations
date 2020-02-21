@@ -1,19 +1,19 @@
 // 3rd Party Imports
-import express from 'express'
-import checkAPIs from 'express-validator'
+const express = require('express')
+const checkAPIs = require('express-validator')
 const { check } = checkAPIs
 
-// My Imports
-import fileUpload from '../middleware/file-upload.js'
-import checkAuth from '../middleware/check-auth.js'
+// My imports
+const { fileUpload } = require('../middleware/file-upload.js')
+const { checkAuth } = require('../middleware/check-auth.js')
 
-import {
+const {
   getPlaceById,
   getPlacesByUserId,
   createPlace,
   updatePlaceById,
   deletePlaceById
-} from '../controllers/places-controller.js'
+} = require('../controllers/places-controller.js')
 
 const router = express.Router()
 
@@ -55,4 +55,4 @@ router.patch(
 // ~ DELETE
 router.delete('/:pid', deletePlaceById)
 
-export default router
+module.exports = router

@@ -1,15 +1,14 @@
 // 3rd Party Imports
-import express from 'express'
-import checkAPIs from 'express-validator'
-const { check } = checkAPIs
+const express = require('express')
+const { check } = require('express-validator')
 
-// My Imports
-import {
+// My imports
+const {
   getAllUsers,
   signupNewUser,
   loginUser
-} from '../controllers/users-controller.js'
-import fileUpload from '../middleware/file-upload.js'
+} = require('../controllers/users-controller.js')
+const { fileUpload } = require('../middleware/file-upload.js')
 
 const router = express.Router()
 
@@ -37,4 +36,4 @@ router.get('/', getAllUsers)
 
 // ~ DELETE
 
-export default router
+module.exports =router

@@ -1,17 +1,16 @@
 // 3rd Part Imports
-import checkAPIs from 'express-validator'
-const { validationResult } = checkAPIs
-import { getCoordsForAddress } from '../utils/location.js'
-import mongoose from 'mongoose'
-import fs from 'fs'
+const { validationResult } = require('express-validator')
+const getCoordsForAddress = require('../utils/location.js')
+const mongoose = require('mongoose')
+const fs = require('fs')
 
-// My Imports
-import HttpError from '../models/http-error.js'
-import Place from '../models/place-model.js'
-import User from '../models/user-model.js'
+// My import
+const HttpError = require('../models/http-error.js')
+const Place = require('../models/place-model.js')
+const User = require('../models/user-model.js')
 
 // ~ CREATE
-export const createPlace = async (req, res, next) => {
+const createPlace = async (req, res, next) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     return next(new HttpError('Invalid inputs given', 422))
@@ -72,7 +71,7 @@ export const createPlace = async (req, res, next) => {
 }
 
 // ~ READ
-export const getPlaceById = async (req, res, next) => {
+const getPlaceById = async (req, res, next) => {
   const placeId = req.params.pid
   let place
   try {
@@ -92,7 +91,7 @@ export const getPlaceById = async (req, res, next) => {
   res.json({ place: place.toObject({ getters: true }) })
 }
 
-export const getPlacesByUserId = async (req, res, next) => {
+const getPlacesByUserId = async (req, res, next) => {
   const userId = req.params.uid
   let places
   try {
@@ -110,7 +109,7 @@ export const getPlacesByUserId = async (req, res, next) => {
 }
 
 // ~ UPDATE
-export const updatePlaceById = async (req, res, next) => {
+const updatePlaceById = async (req, res, next) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     console.log(errors)
@@ -147,7 +146,7 @@ export const updatePlaceById = async (req, res, next) => {
 }
 
 // ~ DELETE
-export const deletePlaceById = async (req, res, next) => {
+const deletePlaceById = async (req, res, next) => {
   const placeId = req.params.pid
 
   let place
@@ -187,4 +186,12 @@ export const deletePlaceById = async (req, res, next) => {
   })
 
   res.status(200).json({ message: 'Deleted place successfully' })
+}
+
+module.exports = {
+  createPlace,
+  getPlaceById,
+  getPlacesByUserId,
+  updatePlaceById,
+  deletePlaceById
 }

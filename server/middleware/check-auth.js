@@ -1,13 +1,13 @@
 // third party imports
-import jwt from 'jsonwebtoken'
+const jwt = require('jsonwebtoken')
 
 // my imports
-import HttpError from '../models/http-error.js'
+const HttpError = require('../models/http-error.js')
 
-export default (req, res, next) => {
+const checkAuth = (req, res, next) => {
   // required for default browser behavior
   // allows for the browser to get to the other requests
-  if(req.method === 'OPTIONS') {
+  if (req.method === 'OPTIONS') {
     return next()
   }
   try {
@@ -18,9 +18,13 @@ export default (req, res, next) => {
     // validate token - error will jump to catch block
     const decodedToken = jwt.verify(token, process.env.JWT_KEY)
     // add user data to each request
-    req.userData = {userId: decodedToken.userId}
+    req.userData = { userId: decodedToken.userId }
     next()
   } catch (err) {
     return next(new HttpError('Authentication failed.', 403))
   }
+}
+
+module.exports = {
+  checkAuth
 }

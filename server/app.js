@@ -1,14 +1,14 @@
 // 3rd party imports
-import express from 'express'
-import bodyParser from 'body-parser'
-import mongoose from 'mongoose'
-import fs from 'fs'
-import path from 'path'
+const express = require('express')
+const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
+const fs = require('fs')
+const path = require('path')
 
 // My imports
-import placesRoutes from './routes/places-routes.js'
-import usersRoutes from './routes/users-routes.js'
-import HttpError from './models/http-error.js'
+const placesRoutes = require('./routes/places-routes.js')
+const usersRoutes = require('./routes/users-routes.js')
+const HttpError = require('./models/http-error.js')
 
 const app = express()
 
@@ -74,6 +74,6 @@ mongoose
     console.log(
       'Database successfully connected. \n'
     )
-    app.listen(5000)
+    app.listen(process.env.PORT || 5000)
   })
   .catch(err => console.log(err))

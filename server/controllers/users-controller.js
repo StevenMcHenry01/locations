@@ -1,15 +1,14 @@
 // 3rd Part Imports
-import checkAPIs from 'express-validator'
-const { validationResult } = checkAPIs
-import bcrypt from 'bcryptjs'
-import jwt from 'jsonwebtoken'
+const { validationResult } = require('express-validator')
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 
-// My Imports
-import HttpError from '../models/http-error.js'
-import User from '../models/user-model.js'
+// My imports
+const HttpError = require('../models/http-error.js')
+const User = require('../models/user-model.js')
 
 // ~ CREATE
-export const signupNewUser = async (req, res, next) => {
+const signupNewUser = async (req, res, next) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     return next(new HttpError('Invalid inputs given', 422))
@@ -74,7 +73,7 @@ export const signupNewUser = async (req, res, next) => {
     .json({ userId: createdUser.id, email: createdUser.email, token })
 }
 
-export const loginUser = async (req, res, next) => {
+const loginUser = async (req, res, next) => {
   const { email, password } = req.body
 
   let existingUser
@@ -126,7 +125,7 @@ export const loginUser = async (req, res, next) => {
 }
 
 // ~ READ
-export const getAllUsers = async (req, res, next) => {
+const getAllUsers = async (req, res, next) => {
   let users
   try {
     users = await User.find({}, '-password')
@@ -140,3 +139,9 @@ export const getAllUsers = async (req, res, next) => {
 // ~ UPDATE
 
 // ~ DELETE
+
+module.exports = {
+  signupNewUser,
+  loginUser,
+  getAllUsers
+}

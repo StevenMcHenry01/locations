@@ -102,6 +102,7 @@ const Auth = () => {
           throw new Error(response)
         }
         auth.login(response.data.userId, response.data.token)
+        navigate('/')
       } catch (err) {
         console.log(err)
       }
@@ -122,10 +123,10 @@ const Auth = () => {
         if (response.status < 200 || response.status > 299) {
           throw new Error(response)
         }
-        auth.login(response.dataId, response.data.token)
+        auth.login(response.data.userId, response.data.token)
+        navigate('/')
       } catch (err) {}
     }
-    navigate('/')
   }
 
   // ~ UI
